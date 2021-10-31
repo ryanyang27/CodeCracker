@@ -32,7 +32,7 @@ int main(void)
     int a = 30;
     // Peripherals (including GPIOs) are disabled by default to save power, so we
     // use the Reset and Clock Control registers to enable the GPIO peripherals that we're using.
-
+    // KEVIN WAS HERE
     __HAL_RCC_GPIOA_CLK_ENABLE(); // enable port A (for the on-board LED, for example)
     __HAL_RCC_GPIOB_CLK_ENABLE(); // enable port B (for the rotary encoder inputs, for example)
     __HAL_RCC_GPIOC_CLK_ENABLE(); // enable port C (for the on-board blue pushbutton, for example)
