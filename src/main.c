@@ -29,7 +29,7 @@
 int main(void)
 {
     HAL_Init(); // initialize the Hardware Abstraction Layer
-    int a = 25;
+    int a = 30;
     // Peripherals (including GPIOs) are disabled by default to save power, so we
     // use the Reset and Clock Control registers to enable the GPIO peripherals that we're using.
 
