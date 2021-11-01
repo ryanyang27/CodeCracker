@@ -29,7 +29,6 @@
 int main(void)
 {
     HAL_Init(); // initialize the Hardware Abstraction Layer
-    int a = 30;
     // Peripherals (including GPIOs) are disabled by default to save power, so we
     // use the Reset and Clock Control registers to enable the GPIO peripherals that we're using.
 
@@ -39,7 +38,8 @@ int main(void)
 
     // initialize the pins to be input, output, alternate function, etc...
 
-    InitializePin(GPIOA, GPIO_PIN_5, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, 0); // on-board LED
+    InitializePin(GPIOA, GPIO_PIN_5, GPIO_MODE_OUTPUT_PP, GPIO_PULLDOWN, 0); // on-board LED
+    // InitializePin(GPIOC, GPIO_PIN_13, GPIO_MODE_OUTPUT_PP, GPIO_PULLDOWN, 0); // on-board LED
 
     // note: the on-board pushbutton is fine with the default values (no internal pull-up resistor
     // is required, since there's one on the board)
@@ -55,15 +55,37 @@ int main(void)
 #ifdef BUTTON_BLINK
     // Wait for the user to push the blue button, then blink the LED.
 
-    // wait for button press (active low)
-    while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
-    {
-    }
-
+    // wait for button press (active low) 0 means button on
+    // while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
+    // {
+    // }
+    bool was_off = true;
     while (1) // loop forever, blinking the LED
     {
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-        HAL_Delay(250); // 250 milliseconds == 1/4 second
+
+        // while (!HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) // While button is on
+        // {
+        //     SerialPuts("Button is on. ");
+        //     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+        // }
+        if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == 0) // If the button is on
+        {
+            if (was_off)
+            {
+                SerialPuts("All my homies... ");
+                HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+                was_off = false;
+            }
+        }
+        else
+        {
+            if (!was_off)
+            {
+                SerialPuts("love winnie! \n");
+                HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+                was_off = true;
+            }
+        }
     }
 #endif
 
