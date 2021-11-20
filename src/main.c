@@ -8,7 +8,7 @@
 // To run a particular example, you should remove the comment (//) in
 // front of exactly ONE of the following lines:
 
-#define BUTTON_BLINK
+// #define BUTTON_BLINK
 // #define LIGHT_SCHEDULER
 // #define TIME_RAND
 // #define KEYPAD
@@ -20,16 +20,21 @@
 // #define ANALOG
 // #define PWM
 
+
 #include <stdbool.h> // booleans, i.e. true and false
 #include <stdio.h>   // sprintf() function
 #include <stdlib.h>  // srand() and random() functions
 
 #include "ece198.h"
 
+void Return_Question();
+bool isGameWon(int game_state);
+void EnterInput();
+int CheckInput(char * input_string, char * solution_string, int attempts, int solution_string_length );
+
 int main(void)
 {
     HAL_Init(); // initialize the Hardware Abstraction Layer
-    int a = 30;
     // Peripherals (including GPIOs) are disabled by default to save power, so we
     // use the Reset and Clock Control registers to enable the GPIO peripherals that we're using.
     // KEVIN WAS HERE
@@ -52,12 +57,18 @@ int main(void)
     // as mentioned above, only one of the following code sections will be used
     // (depending on which of the #define statements at the top of this file has been uncommented)
 
-#ifdef BUTTON_BLINK
+
     // Wait for the user to push the blue button, then blink the LED.
 
     // wait for button press (active low)
+
+
+
+
+#ifdef BUTTON_BLINK
     while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
-    {
+    {   
+        HAL_GPIP_WritePin(GPIOA, GPIO_PIN_5, true);
     }
 
     while (1) // loop forever, blinking the LED
@@ -284,4 +295,36 @@ void SysTick_Handler(void)
 {
     HAL_IncTick(); // tell HAL that a new tick has happened
     // we can do other things in here too if we need to, but be careful
+}
+void Return_Question() {
+    
+}
+
+bool isGameWon(int const game_state) {
+    if (game_state == 10 ) {
+        return 1;
+    } else {
+        return 0;
+    }
+
+}
+
+void EnterInput() {
+
+}
+
+int CheckInput(char * input_string, char * solution_string, int const attempts, int const solution_string_length) {
+    int correctinputs = 0;
+
+    for (int k; k < solution_string_length; ++k) {
+        if ( input_string[k] = solution_string[k]) {
+            ++correctinputs;
+        }
+       
+    }
+    if (correctinputs == solution_string_length) {
+        return 10;
+    } else {
+        return 1;
+    }
 }
