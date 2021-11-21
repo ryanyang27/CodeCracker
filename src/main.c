@@ -27,7 +27,7 @@
 
 #include "ece198.h"
 
-void Return_Question();
+void Return_Question(char * const question_string);
 bool isGameWon(int game_state);
 void EnterInput();
 int CheckInput(char * input_string, char * solution_string, int attempts, int solution_string_length );
@@ -296,9 +296,32 @@ void SysTick_Handler(void)
     HAL_IncTick(); // tell HAL that a new tick has happened
     // we can do other things in here too if we need to, but be careful
 }
-void Return_Question() {
+void Return_Question(char * const question_string) {
+    uint32_t symbol_counter = 0;
+    char morsecodearray[10000];
     
+        while (morsecodearray[symbol_counter] != '\0') {
+        uint32_t now = HAL_GetTick();
+
+        if (morsecodearray[symbol_counter] == '_') {
+             if (now > 5000 && now < 10000)
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
+             else
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
+        } else if (morsecodearray[symbol_counter] == '.'){
+             if (now > 5000 && now < 10000)
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
+             else
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
+        } else if (morsecodearray[symbol_counter] == ' '){
+             if (now > 5000 && now < 10000)
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
+             else
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
+        }
+    }
 }
+
 
 bool isGameWon(int const game_state) {
     if (game_state == 10 ) {
