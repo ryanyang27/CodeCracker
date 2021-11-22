@@ -24,13 +24,14 @@
 #include <stdbool.h> // booleans, i.e. true and false
 #include <stdio.h>   // sprintf() function
 #include <stdlib.h>  // srand() and random() functions
-
+  
 #include "ece198.h"
 
 void Return_Question(char * const question_string);
 bool isGameWon(int game_state);
 void EnterInput();
 int CheckInput(char * input_string, char * solution_string, int attempts, int solution_string_length );
+char *MorseCodeTranslate(char * input_array);
 
 int main(void)
 {
@@ -298,23 +299,23 @@ void SysTick_Handler(void)
 }
 void Return_Question(char * const question_string) {
     uint32_t symbol_counter = 0;
-    char morsecodearray[10000];
-    
+    char *morsecodearray[10000] = MorseCodeTranslate(question_string);
+        
         while (morsecodearray[symbol_counter] != '\0') {
         uint32_t now = HAL_GetTick();
 
         if (morsecodearray[symbol_counter] == '_') {
-             if (now > 5000 && now < 10000)
+             if (now > 1000 && now < 4000)
             HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
              else
             HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
         } else if (morsecodearray[symbol_counter] == '.'){
-             if (now > 5000 && now < 10000)
+             if (now > 1000 && now < 2000)
             HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
              else
             HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
         } else if (morsecodearray[symbol_counter] == ' '){
-             if (now > 5000 && now < 10000)
+             if (now > 1000 && now < 7000)
             HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
              else
             HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
@@ -350,4 +351,69 @@ int CheckInput(char * input_string, char * solution_string, int const attempts, 
     } else {
         return 1;
     }
+}
+
+char *MorseCodeTranslate(char * input_array) {
+char *morsecodearray[10000];
+for (int k; input_array[k] != '\0'; ++k) {
+        
+            if (input_array[k] == 'a' || 'A') {
+                
+            } else if (input_array[k] == 'b' || 'B') {
+                
+            } else if (input_array[k] == 'c' || 'C') {
+ 
+            } else if (input_array[k] == 'c' || 'C') {
+
+            } else if (input_array[k] == 'd' || 'D') {
+
+            } else if (input_array[k] == 'e' || 'E') {
+
+            } else if (input_array[k] == 'f' || 'F') {
+
+            } else if (input_array[k] == 'g' || 'G') {
+
+            } else if (input_array[k] == 'h' || 'H') {
+
+            } else if (input_array[k] == 'i' || 'I') {
+
+            } else if (input_array[k] == 'j' || 'J') {
+
+            } else if (input_array[k] == 'k' || 'K') {
+
+            } else if (input_array[k] == 'l' || 'L') {
+
+            } else if (input_array[k] == 'm' || 'M') {
+
+            } else if (input_array[k] == 'n' || 'N') {
+
+            } else if (input_array[k] == 'o' || 'O') {
+
+            } else if (input_array[k] == 'p' || 'P') {
+
+            } else if (input_array[k] == 'q' || 'Q') {
+
+            } else if (input_array[k] == 'r' || 'R') {
+
+            } else if (input_array[k] == 's' || 'S') {
+
+            } else if (input_array[k] == 't' || 'T') {
+
+            } else if (input_array[k] == 'u' || 'U') {
+
+            } else if (input_array[k] == 'v' || 'V') {
+
+            } else if (input_array[k] == 'w' || 'W') {
+
+            } else if (input_array[k] == 'x' || 'X') {
+
+            } else if (input_array[k] == 'y' || 'Y') {
+
+            } else if (input_array[k] == 'z' || 'Z') {
+
+            } else if (input_array[k] == ' ') {
+
+            }
+        }
+return morsecodearray;
 }
