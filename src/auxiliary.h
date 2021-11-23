@@ -95,34 +95,34 @@ void Return_Question(char *const riddle) {
             }
         }
     }
-//Debugging Notes 1: The first input always works perfectly. Further inputs have the problem of placing dots whenever you hold it down.
-//Future inputs also have the problem of not blinking the light at all. The pause function works well. There's also a space after every input
+//Debugging Notes 2: Spaces just break the function now
 char * EnterInput() {
     // Enter input through button press
     char Sequence[10000];
     char *InputSequence = Sequence; // comfortable length
     int Input_Delay = 0; //Checking how long it's been since 
+    int initial_time; // starting time
+    int time_elapsed; // time without button pushes
+    int final_time; // time that button has been pushed 
+    int time; // time to determine morse code symbol
     while (true) {
-        int initial_time = HAL_GetTick(); // starting time
-        int time_elapsed; // time without button pushes
-        int final_time; // time that button has been pushed 
-        int time; // time to determine morse code symbol
         initial_time = HAL_GetTick(); //Initializing the starting time
     while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
         u_int32_t internaltimer = HAL_GetTick() - initial_time; // determining if the player is going to push the button
         if (internaltimer >= 3*UNIT_LEN) {
+            ++Input_Delay;
             break;
         }   
     }
-    time_elapsed = HAL_GetTick(); //wait for button press
-    if (time_elapsed < 3*UNIT_LEN) {
+    time_elapsed = HAL_GetTick; //wait for button press
+    if (Input_Delay == 0) {
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
         while (!(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)))
         ; //Waiting for Button Release
         final_time = HAL_GetTick();
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
     }
-    if (time_elapsed < 3*UNIT_LEN) { //Short to no pause
+    if (Input_Delay == 0) { //Short to no pause
         time = final_time - initial_time;
     } else { //Longer Pause
         time = initial_time - time_elapsed;
@@ -138,7 +138,6 @@ char * EnterInput() {
         } else if (time < 0 && abs(time) <= 6*UNIT_LEN ) { // negative time is a space
             SerialPuts(" ");
             strncat(InputSequence, " ", 1);
-            ++Input_Delay;
         }
     }
     /*if (Input_Delay == 3) {
