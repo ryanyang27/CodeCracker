@@ -95,7 +95,8 @@ void Return_Question(char *const riddle) {
             }
         }
     }
-
+//Debugging Notes 1: The first input always works perfectly. Further inputs have the problem of placing dots whenever you hold it down.
+//Future inputs also have the problem of not blinking the light at all. The pause function works well. There's also a space after every input
 char * EnterInput() {
     // Enter input through button press
     char Sequence[10000];
@@ -106,6 +107,7 @@ char * EnterInput() {
         int time_elapsed; // time without button pushes
         int final_time; // time that button has been pushed 
         int time; // time to determine morse code symbol
+        initial_time = HAL_GetTick(); //Initializing the starting time
     while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
         u_int32_t internaltimer = HAL_GetTick() - initial_time; // determining if the player is going to push the button
         if (internaltimer >= 3*UNIT_LEN) {
@@ -114,16 +116,18 @@ char * EnterInput() {
     }
     time_elapsed = HAL_GetTick(); //wait for button press
     if (time_elapsed < 3*UNIT_LEN) {
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
         while (!(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)))
         ; //Waiting for Button Release
         final_time = HAL_GetTick();
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
     }
     if (time_elapsed < 3*UNIT_LEN) { //Short to no pause
         time = final_time - initial_time;
     } else { //Longer Pause
         time = initial_time - time_elapsed;
     }
-        if (time < UNIT_LEN*2 && time > 0) { // Shortest is Dot
+        if (time < UNIT_LEN*2 && time >= 0) { // Shortest is Dot
             SerialPuts(".");
             strncat(InputSequence, ".", 1);
             Input_Delay = 0;
@@ -131,7 +135,7 @@ char * EnterInput() {
             SerialPuts("-");
             strncat(InputSequence, "-", 1);
             Input_Delay = 0;
-        } else if (time < 0 && abs(time) <= 6*UNIT_LEN ) {
+        } else if (time < 0 && abs(time) <= 6*UNIT_LEN ) { // negative time is a space
             SerialPuts(" ");
             strncat(InputSequence, " ", 1);
             ++Input_Delay;
