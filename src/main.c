@@ -8,7 +8,8 @@
 // To run a particular example, you should remove the comment (//) in
 // front of exactly ONE of the following lines:
 
-#define BUTTON_BLINK
+// #define BUTTON_BLINK
+// #define Algorithm_One
 // #define LIGHT_SCHEDULER
 // #define TIME_RAND
 // #define KEYPAD
@@ -28,11 +29,7 @@
 #include "ece198.h"
 #include "auxiliary.h"
 
-void Return_Question(char *const question_string);
-bool isGameWon(int game_state);
-void EnterInput();
-int CheckInput(char *input_string, char *solution_string, int attempts, int solution_string_length);
-char *MorseCodeTranslate(char *input_array);
+
 
 int main(void)
 {
@@ -86,36 +83,11 @@ int main(void)
     //             was_off = true;
     //         }
     //     }
-
+#endif 
     char msg[] = "why did the chicken cross the road";
     char *riddle = strupr(msg); // uppercase
-    while (1)                   // loop forever, blinking the LED
-    {
-        HAL_Delay(5000); // Startup program delay (arbitrary)
-
-        int i = 0;
-        while (riddle[i] != '\0')
-        {                          // loop through each letter
-            SerialPutc(riddle[i]); // print letter to console
-
-            if (riddle[i] == ' ')
-            {
-                // space char then delay 7 units
-                HAL_Delay(7 * UNIT_LEN);
-                i++;
-                continue;
-            }
-            else
-            {
-                int letter_num = riddle[i] - 65;                        // convert to [0, 25] bounds
-                char *m_code_sequence = morse_code_letters[letter_num]; // morse code for this letter
-                flashSequence(m_code_sequence);
-                i++;
-            }
-        }
-    }
-#endif
-
+    Return_Question(riddle);
+    EnterInput();
 #ifdef LIGHT_SCHEDULER
     // Turn on the LED five seconds after reset, and turn it off again five seconds later.
 

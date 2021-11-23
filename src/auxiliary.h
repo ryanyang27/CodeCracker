@@ -6,8 +6,12 @@
 
 void flashSequence(char *sequence);
 void flashDotOrDash(char dotOrDash);
+void Return_Question(char *const question_string);
+bool isGameWon(int game_state);
+char * EnterInput();
+int CheckInput(char *input_string, char *solution_string, int attempts, int solution_string_length);
 
-const int UNIT_LEN = 1000;
+const int UNIT_LEN = 100;
 //define the morse code for the alphabet and numbers
 char *morse_code_letters[] = {
     ".-",   // A
@@ -64,4 +68,60 @@ void flashDotOrDash(char dotOrDash)
     // blink LED off
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
     HAL_Delay(UNIT_LEN);                         // gap between flashes
+}
+
+void Return_Question(char *const riddle) {
+    // loop forever, blinking the LED
+        HAL_Delay(5000); // Startup program delay (arbitrary)
+
+        int i = 0;
+        while (riddle[i] != '\0')
+        {                          // loop through each letter
+            SerialPutc(riddle[i]); // print letter to console
+
+            if (riddle[i] == ' ')
+            {
+                // space char then delay 7 units
+                HAL_Delay(7 * UNIT_LEN);
+                i++;
+                continue;
+            }
+            else
+            {
+                int letter_num = riddle[i] - 65;                        // convert to [0, 25] bounds
+                char *m_code_sequence = morse_code_letters[letter_num]; // morse code for this letter
+                flashSequence(m_code_sequence);
+                i++;
+            }
+        }
+    }
+
+char * EnterInput() {
+    // Enter input through button press
+    char Sequence[10000];
+    char *InputSequence = Sequence; // comfortable length
+
+    while (true) {
+        int initial_time = HAL_GetTick();
+    while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
+        ; //wait for button press
+            int time = HAL_GetTick();
+    while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
+        ; //wait for button release   
+        char buff[100];
+        sprintf(buff, "Value is %d units", time);
+        if (time < UNIT_LEN*2 && time > 0) { // Shortest is Dot
+            SerialPuts(".");
+            strncat(InputSequence, ".", 1);
+        } else if (time >= UNIT_LEN*2) { //Longest is Dash
+            SerialPuts("-");
+            strncat(InputSequence, "-", 1);
+        } else if (time < 0 && abs(time) <= 6*UNIT_LEN ) {
+            SerialPuts(" ");
+            strncat(InputSequence, " ", 1);
+        } else if (time < 0 && abs(time) >= 6*UNIT_LEN ) {
+            SerialPuts("  ");
+            strncat(InputSequence, "  ", 2);
+        }
+    }
 }
