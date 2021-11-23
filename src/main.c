@@ -24,12 +24,19 @@
 #include <stdio.h>   // sprintf() function
 #include <stdlib.h>  // srand() and random() functions
 
+#include <string.h>
 #include "ece198.h"
+#include "auxiliary.h"
+
+void Return_Question(char *const question_string);
+bool isGameWon(int game_state);
+void EnterInput();
+int CheckInput(char *input_string, char *solution_string, int attempts, int solution_string_length);
+char *MorseCodeTranslate(char *input_array);
 
 int main(void)
 {
     HAL_Init(); // initialize the Hardware Abstraction Layer
-    int a = 30;
     // Peripherals (including GPIOs) are disabled by default to save power, so we
     // use the Reset and Clock Control registers to enable the GPIO peripherals that we're using.
 
@@ -39,7 +46,8 @@ int main(void)
 
     // initialize the pins to be input, output, alternate function, etc...
 
-    InitializePin(GPIOA, GPIO_PIN_5, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, 0); // on-board LED
+    InitializePin(GPIOA, GPIO_PIN_5, GPIO_MODE_OUTPUT_PP, GPIO_PULLDOWN, 0); // on-board LED
+    // InitializePin(GPIOC, GPIO_PIN_13, GPIO_MODE_OUTPUT_PP, GPIO_PULLDOWN, 0); // on-board LED
 
     // note: the on-board pushbutton is fine with the default values (no internal pull-up resistor
     // is required, since there's one on the board)
@@ -51,19 +59,60 @@ int main(void)
 
     // as mentioned above, only one of the following code sections will be used
     // (depending on which of the #define statements at the top of this file has been uncommented)
-
 #ifdef BUTTON_BLINK
     // Wait for the user to push the blue button, then blink the LED.
 
-    // wait for button press (active low)
-    while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
-    {
-    }
+    // wait for button press (active low) 0 means button on
+    // while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
+    // {
+    // }
 
-    while (1) // loop forever, blinking the LED
+    // bool was_off = true;
+    //     if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == 0) // If the button is on
+    //     {
+    //         if (was_off)
+    //         {
+    //             SerialPuts("Hello... ");
+    //             HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+    //             was_off = false;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (!was_off)
+    //         {
+    //             SerialPuts("world! \n");
+    //             HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+    //             was_off = true;
+    //         }
+    //     }
+
+    char msg[] = "why did the chicken cross the road";
+    char *riddle = strupr(msg); // uppercase
+    while (1)                   // loop forever, blinking the LED
     {
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-        HAL_Delay(250); // 250 milliseconds == 1/4 second
+        HAL_Delay(5000); // Startup program delay (arbitrary)
+
+        int i = 0;
+        while (riddle[i] != '\0')
+        {                          // loop through each letter
+            SerialPutc(riddle[i]); // print letter to console
+
+            if (riddle[i] == ' ')
+            {
+                // space char then delay 7 units
+                HAL_Delay(7 * UNIT_LEN);
+                i++;
+                continue;
+            }
+            else
+            {
+                int letter_num = riddle[i] - 65;                        // convert to [0, 25] bounds
+                char *m_code_sequence = morse_code_letters[letter_num]; // morse code for this letter
+                flashSequence(m_code_sequence);
+                i++;
+            }
+        }
     }
 #endif
 
