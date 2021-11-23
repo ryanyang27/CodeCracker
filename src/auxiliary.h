@@ -99,12 +99,12 @@ char * EnterInput() {
     // Enter input through button press
     char Sequence[10000];
     char *InputSequence = Sequence; // comfortable length
-    int Input_Delay = 0; //Checking how long it's been since 
+    int Input_Delay = 0; //Checking how long it's been since last user input
     int initial_time; // starting time
     int time_elapsed; // time without button pushes
     int final_time; // time that button has been pushed 
     int time; // time to determine morse code symbol
-    while (true) {
+    while (Input_Delay != 3) {
         initial_time = HAL_GetTick(); //Initializing the starting time
     while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
         u_int32_t internaltimer = HAL_GetTick() - initial_time; // determining if the player is going to push the button
@@ -137,10 +137,9 @@ char * EnterInput() {
             strncat(InputSequence, " ", 1);
         }
     }
-    if (Input_Delay == 3) {
-            for (int k; k < 4; ++k) { // removing the spaces at the end
+    /*for (int k; k < 4; ++k) { // removing the spaces at the end
         InputSequence[strlen(InputSequence)-k] -= 32;
-        }
-        return InputSequence;
-    }
+        }*/
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
+    return InputSequence;
 }
