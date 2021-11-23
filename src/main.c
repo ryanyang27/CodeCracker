@@ -28,6 +28,12 @@
 #include "ece198.h"
 #include "auxiliary.h"
 
+void Return_Question(char *const question_string);
+bool isGameWon(int game_state);
+void EnterInput();
+int CheckInput(char *input_string, char *solution_string, int attempts, int solution_string_length);
+char *MorseCodeTranslate(char *input_array);
+
 int main(void)
 {
     HAL_Init(); // initialize the Hardware Abstraction Layer
