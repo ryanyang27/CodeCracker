@@ -95,7 +95,6 @@ void Return_Question(char *const riddle) {
             }
         }
     }
-//Debugging Notes 2: Spaces just break the function now
 char * EnterInput() {
     // Enter input through button press
     char Sequence[10000];
@@ -114,7 +113,7 @@ char * EnterInput() {
             break;
         }   
     }
-    time_elapsed = HAL_GetTick; //wait for button press
+    time_elapsed = HAL_GetTick(); //wait for button press
     if (Input_Delay == 0) {
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
         while (!(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)))
@@ -122,7 +121,7 @@ char * EnterInput() {
         final_time = HAL_GetTick();
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
     }
-    if (Input_Delay == 0) { //Short to no pause
+    if (Input_Delay == 0) { //User requests an input
         time = final_time - initial_time;
     } else { //Longer Pause
         time = initial_time - time_elapsed;
@@ -135,15 +134,15 @@ char * EnterInput() {
             SerialPuts("-");
             strncat(InputSequence, "-", 1);
             Input_Delay = 0;
-        } else if (time < 0 && abs(time) <= 6*UNIT_LEN ) { // negative time is a space
+        } else if (time < 0) { // negative time is a space
             SerialPuts(" ");
             strncat(InputSequence, " ", 1);
         }
     }
-    /*if (Input_Delay == 3) {
+    if (Input_Delay == 3) {
             for (int k; k < 4; ++k) {
         InputSequence[strlen(InputSequence)-k] = '\0';
         }
         return InputSequence;
-    }*/
+    }
 }
