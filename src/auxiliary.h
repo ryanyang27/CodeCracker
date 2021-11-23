@@ -11,7 +11,7 @@ bool isGameWon(int game_state);
 char * EnterInput();
 int CheckInput(char *input_string, char *solution_string, int attempts, int solution_string_length);
 
-const int UNIT_LEN = 100;
+const int UNIT_LEN = 1000;
 //define the morse code for the alphabet and numbers
 char *morse_code_letters[] = {
     ".-",   // A
@@ -100,28 +100,47 @@ char * EnterInput() {
     // Enter input through button press
     char Sequence[10000];
     char *InputSequence = Sequence; // comfortable length
-
+    int Input_Delay = 0; //Checking how long it's been since 
     while (true) {
-        int initial_time = HAL_GetTick();
-    while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
-        ; //wait for button press
-            int time = HAL_GetTick();
-    while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
-        ; //wait for button release   
-        char buff[100];
-        sprintf(buff, "Value is %d units", time);
+        int initial_time = HAL_GetTick(); // starting time
+        int time_elapsed; // time without button pushes
+        int final_time; // time that button has been pushed 
+        int time; // time to determine morse code symbol
+    while (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
+        u_int32_t internaltimer = HAL_GetTick() - initial_time; // determining if the player is going to push the button
+        if (internaltimer >= 3*UNIT_LEN) {
+            break;
+        }   
+    }
+    time_elapsed = HAL_GetTick(); //wait for button press
+    if (time_elapsed < 3*UNIT_LEN) {
+        while (!(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)))
+        ; //Waiting for Button Release
+        final_time = HAL_GetTick();
+    }
+    if (time_elapsed < 3*UNIT_LEN) { //Short to no pause
+        time = final_time - initial_time;
+    } else { //Longer Pause
+        time = initial_time - time_elapsed;
+    }
         if (time < UNIT_LEN*2 && time > 0) { // Shortest is Dot
             SerialPuts(".");
             strncat(InputSequence, ".", 1);
+            Input_Delay = 0;
         } else if (time >= UNIT_LEN*2) { //Longest is Dash
             SerialPuts("-");
             strncat(InputSequence, "-", 1);
+            Input_Delay = 0;
         } else if (time < 0 && abs(time) <= 6*UNIT_LEN ) {
             SerialPuts(" ");
             strncat(InputSequence, " ", 1);
-        } else if (time < 0 && abs(time) >= 6*UNIT_LEN ) {
-            SerialPuts("  ");
-            strncat(InputSequence, "  ", 2);
+            ++Input_Delay;
         }
     }
+    /*if (Input_Delay == 3) {
+            for (int k; k < 4; ++k) {
+        InputSequence[strlen(InputSequence)-k] = '\0';
+        }
+        return InputSequence;
+    }*/
 }

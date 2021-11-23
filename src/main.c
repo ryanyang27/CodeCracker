@@ -86,7 +86,6 @@ int main(void)
 #endif 
     char msg[] = "why did the chicken cross the road";
     char *riddle = strupr(msg); // uppercase
-    Return_Question(riddle);
     EnterInput();
 #ifdef LIGHT_SCHEDULER
     // Turn on the LED five seconds after reset, and turn it off again five seconds later.
