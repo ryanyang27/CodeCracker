@@ -67,7 +67,7 @@ int main(void)
     // {
     // }
 
-    // bool was_off = true;
+    bool was_off = true;
     //     if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == 0) // If the button is on
     //     {
     //         if (was_off)
@@ -87,31 +87,55 @@ int main(void)
     //         }
     //     }
 
-    char msg[] = "why did the chicken cross the road";
+    HAL_Delay(5000); // Startup program delay (arbitrary)
+
+    // OUTPUT RIDDLE TO USER
+    char msg[] = "what is one plus one";
+    char answer[] = "one";
     char *riddle = strupr(msg); // uppercase
-    while (1)                   // loop forever, blinking the LED
+    char *ans = strupr(msg);    // uppercase
+
+    int i = 0;
+    while (riddle[i] != '\0')
+    {                          // loop through each letter
+        SerialPutc(riddle[i]); // print letter to console
+
+        if (riddle[i] == ' ')
+        {
+            // space char then delay 7 units
+            HAL_Delay(7 * UNIT_LEN);
+            i++;
+            continue;
+        }
+        else
+        {
+            int letter_num = riddle[i] - 65;                        // convert to [0, 25] bounds
+            char *m_code_sequence = morse_code_letters[letter_num]; // morse code for this letter
+            flashSequence(m_code_sequence);
+            i++;
+        }
+    }
+
+    // TRANSITION
+    SerialPutc('\n');
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true);  // turn on LED
+    HAL_Delay(10000);                            // gap between flashes
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
+
+    // INPUT FROM USER -- TODO
+    SerialPuts("Input your answer in morse code\n");
+    uint32_t now = HAL_GetTick();
+    while (now < 10000)
     {
-        HAL_Delay(5000); // Startup program delay (arbitrary)
+    }
 
-        int i = 0;
-        while (riddle[i] != '\0')
-        {                          // loop through each letter
-            SerialPutc(riddle[i]); // print letter to console
-
-            if (riddle[i] == ' ')
-            {
-                // space char then delay 7 units
-                HAL_Delay(7 * UNIT_LEN);
-                i++;
-                continue;
-            }
-            else
-            {
-                int letter_num = riddle[i] - 65;                        // convert to [0, 25] bounds
-                char *m_code_sequence = morse_code_letters[letter_num]; // morse code for this letter
-                flashSequence(m_code_sequence);
-                i++;
-            }
+    // PROGRAM DONE
+    while (1) // loop forever, blinking the LED
+    {
+        if (was_off)
+        {
+            SerialPuts("\nGame complete!");
+            was_off = false;
         }
     }
 #endif

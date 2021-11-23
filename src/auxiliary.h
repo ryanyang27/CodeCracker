@@ -7,7 +7,7 @@
 void flashSequence(char *sequence);
 void flashDotOrDash(char dotOrDash);
 
-const int UNIT_LEN = 1000;
+const int UNIT_LEN = 50;
 //define the morse code for the alphabet and numbers
 char *morse_code_letters[] = {
     ".-",   // A
