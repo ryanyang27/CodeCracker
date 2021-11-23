@@ -114,14 +114,12 @@ char * EnterInput() {
         }   
     }
     time_elapsed = HAL_GetTick(); //wait for button press
-    if (Input_Delay == 0) {
+    if (Input_Delay == 0) { //If User did Input
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn on LED
         while (!(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)))
         ; //Waiting for Button Release
         final_time = HAL_GetTick();
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
-    }
-    if (Input_Delay == 0) { //User requests an input
         time = final_time - initial_time;
     } else { //Longer Pause
         time = initial_time - time_elapsed;
@@ -140,8 +138,8 @@ char * EnterInput() {
         }
     }
     if (Input_Delay == 3) {
-            for (int k; k < 4; ++k) {
-        InputSequence[strlen(InputSequence)-k] = '\0';
+            for (int k; k < 4; ++k) { // removing the spaces at the end
+        InputSequence[strlen(InputSequence)-k] -= 32;
         }
         return InputSequence;
     }
