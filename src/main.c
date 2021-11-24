@@ -30,7 +30,6 @@
 #include "ece198.h"
 #include "cvector.h" // vector library
 #include "output_helpers.h"
-#include "input_helpers.h"
 
 int main(void)
 {
