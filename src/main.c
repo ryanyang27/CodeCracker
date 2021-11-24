@@ -31,6 +31,18 @@
 #include "cvector.h" // vector library
 #include "output_helpers.h"
 
+bool buttonIsOn()
+{
+    if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == false)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 int main(void)
 {
     HAL_Init(); // initialize the Hardware Abstraction Layer
