@@ -1,7 +1,7 @@
 #ifndef AUXILIARY_H_
 #define AUXILIARY_H_
 
-#define UNIT_LEN 250
+#define UNIT_LEN 500
 //define the morse code for the alphabet and numbers
 char *morse_code_letters[] = {
     ".-",   // A

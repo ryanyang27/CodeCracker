@@ -96,13 +96,15 @@ int main(void)
         if (currButtonState != lastButtonState)
         {
             if (buttonIsOn())
-            {
+            {   
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, true); // turn o LonED
                 int elapsed = HAL_GetTick() - begin;        // how long the button was off for
                 elapsed = -elapsed;                         // negate since button was off for this interval
                 cvector_push_back(inputIntervals, elapsed); // append elapsed
             }
             else
-            {
+            {   
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, false); // turn off LED
                 int elapsed = HAL_GetTick() - begin;
                 cvector_push_back(inputIntervals, elapsed); // how long the button was on for
             }
